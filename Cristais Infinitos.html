@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cristais Infinitos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+@property --h{syntax:'<number>';inherits:true;initial-value:175}
+:root{--h:175;transition:--h 1.2s;--bg:hsl(var(--h) 45% 94%);--panel:hsl(var(--h) 40% 99% / .85);--ink:hsl(var(--h) 50% 13%);--mute:hsl(var(--h) 20% 36%);--line:hsl(var(--h) 30% 81%);--acc:hsl(var(--h) 75% 36%);--gold:hsl(38 95% 38%);--btn:hsl(var(--h) 55% 17%);--btnink:#fff;--on:hsl(var(--h) 60% 88%);--glow:hsl(var(--h) 80% 70% / .35);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:hsl(var(--h) 50% 6%);--panel:hsl(var(--h) 38% 12% / .8);--ink:hsl(var(--h) 45% 93%);--mute:hsl(var(--h) 22% 66%);--line:hsl(var(--h) 32% 22%);--acc:hsl(var(--h) 80% 60%);--gold:hsl(42 97% 60%);--btn:hsl(var(--h) 80% 60%);--btnink:hsl(var(--h) 60% 8%);--on:hsl(var(--h) 45% 20%);--glow:hsl(var(--h) 90% 60% / .3)}}
+:root[data-theme="dark"]{--bg:hsl(var(--h) 50% 6%);--panel:hsl(var(--h) 38% 12% / .8);--ink:hsl(var(--h) 45% 93%);--mute:hsl(var(--h) 22% 66%);--line:hsl(var(--h) 32% 22%);--acc:hsl(var(--h) 80% 60%);--gold:hsl(42 97% 60%);--btn:hsl(var(--h) 80% 60%);--btnink:hsl(var(--h) 60% 8%);--on:hsl(var(--h) 45% 20%);--glow:hsl(var(--h) 90% 60% / .3)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.4 "Bricolage Grotesque",system-ui,sans-serif;background:radial-gradient(900px 500px at 15% -10%,var(--glow),transparent),var(--bg)}
+.app{max-width:1000px;margin:0 auto;padding:12px;display:grid;gap:14px}
+@media(min-width:800px){.app{grid-template-columns:370px 1fr;align-items:start}.stage{position:sticky;top:12px}}
+.stage{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:18px;text-align:center;overflow:hidden;min-height:470px;backdrop-filter:blur(8px)}
+.stage>*{position:relative;z-index:1}
+#amb{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#amb span{position:absolute;bottom:-30px;opacity:.55;animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-560px) rotate(40deg);opacity:0}}
+h1{margin:0;font-size:15px;font-weight:600;color:var(--mute);text-align:left}
+#an{display:block;font-size:24px;font-weight:800;color:var(--ink)}
+.bank b{display:block;font-size:48px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;margin-top:10px}
+.bank span,.mini{color:var(--mute);font-size:14px}
+.crystal{background:none;border:0;padding:0;cursor:pointer;width:210px;display:block;margin:6px auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .08s}
+.crystal:active{transform:scale(.92)}
+.crystal svg{display:block;animation:br 3.5s ease-in-out infinite;filter:drop-shadow(0 0 26px var(--acc))}
+.fren .crystal svg{filter:drop-shadow(0 0 44px var(--gold))}
+@keyframes br{50%{transform:translateY(-7px)}}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.fl{position:absolute;pointer-events:none;font-weight:800;color:var(--acc);animation:up .9s ease-out forwards;white-space:nowrap;z-index:3}
+@keyframes up{to{transform:translateY(-70px);opacity:0}}
+.sp{position:absolute;color:var(--acc);pointer-events:none;animation:sp .6s ease-out forwards;z-index:3}
+@keyframes sp{to{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+@keyframes bob{to{transform:translateY(-8px) rotate(6deg)}}
+.gold{position:absolute!important;width:60px;height:60px;border:0;background:none;cursor:pointer;padding:0;animation:bob .9s ease-in-out infinite alternate;z-index:4!important;filter:drop-shadow(0 0 12px var(--gold))}
+#buff{min-height:24px;font-weight:800;color:var(--gold)}
+#hint{color:var(--mute);min-height:20px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tabs button,.seg button{font:inherit;font-weight:600;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer}
+.tabs button[aria-selected="true"],.tabs button[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--btn);color:var(--btnink);border-color:var(--btn)}
+.tabs button:disabled{opacity:.5;cursor:default}
+.seg{display:flex;gap:6px;margin-top:10px}
+.row,.card{display:grid;grid-template-columns:1fr auto;gap:3px 12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:11px 13px;margin-top:8px;align-items:center;backdrop-filter:blur(6px)}
+.row small,.card small{color:var(--mute);grid-column:1}
+.rt{display:flex;gap:8px;align-items:baseline}
+.own{color:var(--acc);font-weight:800}
+.buy{grid-column:2;grid-row:1 / span 3;background:var(--btn);color:var(--btnink);border:0;border-radius:11px;padding:10px 12px;font:inherit;font-weight:600;cursor:pointer;min-width:116px}
+.buy:disabled{opacity:.35;cursor:not-allowed}
+.buy.ready{animation:pulse 1s ease-in-out infinite alternate}
+@keyframes pulse{to{box-shadow:0 0 0 6px var(--glow)}}
+.bar{grid-column:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar u{display:block;height:100%;background:var(--acc);width:0;transition:width .2s}
+.card.full{grid-template-columns:1fr}
+.card.full .buy{grid-column:1;grid-row:auto;justify-self:start;margin-top:6px}
+.ach{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.ach div{border:1px dashed var(--line);border-radius:12px;padding:10px;font-size:14px;color:var(--mute)}
+.ach div.on{border:1px solid var(--acc);background:var(--on);color:var(--ink)}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--btn);color:var(--btnink);padding:10px 16px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center;z-index:9}
+#toast.show{opacity:1}
+h2{font-size:16px;margin:16px 0 0}
+p{margin:6px 0}
+.boss{position:absolute!important;inset:auto 12px 12px 12px;z-index:5!important;background:var(--panel);border:2px solid var(--gold);border-radius:18px;padding:10px 12px;backdrop-filter:blur(10px)}
+.boss[hidden]{display:none}
+.hp{height:14px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0}.hp u{display:block;height:100%;background:linear-gradient(90deg,#e0364a,var(--gold));width:100%;transition:width .1s}
+.bface{font-size:56px;background:none;border:0;cursor:pointer;line-height:1;transition:transform .08s;animation:br 1s ease-in-out infinite}
+.pets{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.pets div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;font-size:14px}
+.mt{position:absolute!important;z-index:4!important;border:0;background:none;font-size:30px;cursor:pointer;animation:bob .7s ease-in-out infinite alternate;padding:0}
+#ev{min-height:22px;font-weight:800;color:var(--acc)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+<section class="stage" id="stage">
+  <div id="amb"></div>
+  <h1>Cristais Infinitos<span id="an"></span></h1>
+  <div class="bank"><b id="c">0</b><span id="cps"></span></div>
+  <button class="crystal" id="crystal" aria-label="Quebrar o cristal">
+    <svg viewBox="0 0 200 240" aria-hidden="true">
+      <polygon points="48,62 100,86 100,232 24,128" fill="var(--acc)"/>
+      <polygon points="48,62 100,86 100,232 24,128" fill="#000" opacity=".28"/>
+      <polygon points="152,62 176,128 100,232 100,86" fill="var(--acc)"/>
+      <polygon points="152,62 176,128 100,232 100,86" fill="#000" opacity=".5"/>
+      <polygon points="100,8 152,62 100,86 48,62" fill="var(--acc)"/>
+      <polygon points="100,8 126,35 100,50 74,35" fill="#fff" opacity=".5"/>
+      <path d="M100,8 152,62 176,128 100,232 24,128 48,62Z M48,62 100,86 152,62 M100,86 100,232" fill="none" stroke="var(--panel)" stroke-width="2.5" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <div id="hint">Toque no cristal para começar</div>
+  <div id="buff"></div>
+  <div id="ev"><span id="et"></span> <button class="buy" id="mb" hidden></button></div>
+  <div class="mini" id="mini"></div>
+  <div id="boss" class="boss" hidden></div>
+</section>
+<section>
+  <div class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-t="g" aria-selected="true">Geradores</button>
+    <button role="tab" data-t="q" aria-selected="false" id="tq">Missões</button>
+    <button role="tab" data-t="h" aria-selected="false">Ajudantes</button>
+    <button role="tab" data-t="u" aria-selected="false">Melhorias</button>
+    <button role="tab" data-t="a" aria-selected="false">Conquistas</button>
+    <button role="tab" data-t="p" aria-selected="false">Renascer</button>
+  </div>
+  <div id="p-g">
+    <div class="tabs" id="chips"></div>
+    <div class="seg" id="seg"><button data-m="1">×1</button><button data-m="10">×10</button><button data-m="0">Máx</button></div>
+    <div id="gens"></div>
+  </div>
+  <div id="p-q" hidden><p>Complete missões para ganhar chuvas de cristais. Novas missões aparecem sempre.</p><div id="qs"></div></div>
+  <div id="p-h" hidden><div class="card"><div><b>Ovo misterioso</b></div><small>Choca um ajudante aleatório. Repetidos sobem de nível. Chefes derrotados também dão ovos.</small><button class="buy" id="egg"></button></div><div class="pets" id="pets"></div></div>
+  <div id="p-u" hidden>
+    <h2>Poder do clique</h2>
+    <div class="card" id="cu"><div><b id="cun"></b></div><small id="cud"></small><button class="buy" id="cub"></button></div>
+    <h2>Melhorias eternas (Essências)</h2>
+    <div id="eus"></div>
+  </div>
+  <div id="p-a" hidden><p id="acnt"></p><div class="ach" id="achs"></div></div>
+  <div id="p-p" hidden>
+    <div class="card full">
+      <div><b>Renascimento</b>
+      <p>Reinicia cristais, geradores e poder do clique. Em troca você ganha Essências: cada uma dá +5% de produção para sempre e compra melhorias eternas. Áreas, conquistas e Essências ficam com você.</p>
+      <p id="pinfo"></p></div>
+      <button class="buy" id="pbtn"></button>
+    </div>
+  </div>
+</section>
+</main>
+<div id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),R=Math.random;
+const SUF=["","mil","mi","bi","tri","quad","quin","sex","sep","oct","non","dez"];
+function f(x){if(x<10)return x%1?x.toFixed(1).replace(".",","):String(x);if(x<1000)return String(Math.floor(x));
+const e=Math.min(Math.floor(Math.log10(x)/3),SUF.length-1),v=x/10**(e*3);return v.toFixed(v<10?2:v<100?1:0).replace(".",",")+" "+SUF[e];}
+const AR=[["Caverna Cristalina",175,0,["✨","💎","✦"]],["Floresta Brilhante",135,1e5,["🍃","🦋","✨"]],["Vulcão de Cinzas",12,1e8,["🔥","🌋","✨"]],["Abismo Estelar",265,1e11,["⭐","🪐","🌌"]]];
+const G=[["⛏️ Mineiro",15,.1,0],["🔩 Broca",100,1,0],["💠 Veio de cristal",1100,8,0],
+["🧚 Fada coletora",12000,47,1],["🌳 Árvore-lanterna",130000,260,1],["🦌 Guardião da floresta",1.4e6,1400,1],
+["🌋 Forja de lava",2e7,7800,2],["🗿 Golem de magma",3.3e8,44000,2],["🔥 Fênix",5e9,260000,2],
+["🌀 Portal estelar",7e10,1.6e6,3],["🌌 Coração da galáxia",1e12,1e7,3],["⭐ Núcleo estelar",2e13,6.5e7,3]];
+const CU=[["Picareta afiada",100],["Luvas de energia",1000],["Martelo vibrante",12000],["Punho de cristal",150000],["Toque estelar",2e6],["Mão do núcleo",3e7],["Toque cósmico",5e9],["Dedo do infinito",1e12]];
+const EU=[["Começo rápido","Cada rodada começa com 5 mil cristais",5],["Brilho dourado","Cristais dourados aparecem 2× mais",10],["Eco eterno","Ganho offline sobe de 50% para 100%",20]];
+const M=[10,25,50,100,200];
+const A=[];
+for(let k=2;k<=16;k++)A.push(["t"+k,"Acumular "+f(10**k)+" cristais",()=>s.all>=10**k]);
+[100,1000,10000].forEach(n=>A.push(["k"+n,"Quebrar o cristal "+f(n)+" vezes",()=>s.clicks>=n]));
+[1,10,50].forEach(n=>A.push(["g"+n,"Pegar "+n+(n>1?" cristais dourados":" cristal dourado"),()=>s.gold>=n]));
+[1,2,3].forEach(n=>A.push(["u"+n,"Descobrir "+AR[n][0],()=>s.ua>n]));
+[1,5,10].forEach(n=>A.push(["b"+n,"Derrotar "+n+(n>1?" chefes":" chefe"),()=>s.bk>=n]));
+const KEY="cristais-infinitos-v2";
+const fresh=()=>({c:0,run:0,all:0,clicks:0,bought:0,n:G.map(()=>0),cu:0,ess:0,essTot:0,eu:[0,0,0],gold:0,ach:{},area:0,ua:1,q:[],bk:0,pets:[0,0,0,0,0,0],eggs:0,prod:0,t:Date.now()});
+let s=fresh(),mode=1,fren=0,confirmT=0,nextGold=Date.now()+30000,evT=0,merch=0,combo=0,cT=0,evNext=Date.now()+100000;
+try{const r=localStorage.getItem(KEY);if(r){s=Object.assign(fresh(),JSON.parse(r));while(s.n.length<G.length)s.n.push(0);if(s.v!==3){s.v=3;s.q=[];s.prod=s.all}}}catch(e){}
+function save(){s.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+const gm=()=>(1+.05*s.essTot)*(1+.02*Object.keys(s.ach).length)*(1+.05*s.bk)*(1+.03*s.pets[0])*(evT>Date.now()?3:1);
+const mm=n=>{let m=1;M.forEach(t=>{if(n>=t)m*=2});return m};
+const buffOn=()=>Date.now()<fren;
+function base(){let t=0;G.forEach((g,i)=>t+=s.n[i]*g[2]*mm(s.n[i]));return t*gm()}
+const cps=()=>base()*(buffOn()?5:1);
+const clickV=()=>(2**s.cu*gm()*(1+.1*s.pets[1])*(buffOn()?5:1)+cps()*.005)*(1+Math.min(combo,20)/20);
+const cost=(i,k)=>G[i][1]*1.16**s.n[i]*((1.16**k-1)/.16);
+function maxK(i){let k=0;while(k<1000&&cost(i,k+1)<=s.c)k++;return k}
+const gain=()=>Math.floor(Math.sqrt(s.run/1e7));
+const add=v=>{s.c+=v;s.run+=v;s.all+=v},addp=v=>{add(v);s.prod+=v};
+let tm;function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(tm);tm=setTimeout(()=>e.classList.remove("show"),2800)}
+function fx(txt,x,y){const st=$("#stage"),r=st.getBoundingClientRect(),e=document.createElement("span");e.className="fl";e.textContent=txt;
+e.style.left=(x-r.left-14)+"px";e.style.top=(y-r.top-20)+"px";st.appendChild(e);setTimeout(()=>e.remove(),950);
+for(let i=0;i<7;i++){const p=document.createElement("span"),a=R()*6.28,d=40+R()*55;p.className="sp";p.textContent="✦";
+p.style.cssText="left:"+(x-r.left)+"px;top:"+(y-r.top)+"px;--dx:"+Math.cos(a)*d+"px;--dy:"+Math.sin(a)*d+"px";st.appendChild(p);setTimeout(()=>p.remove(),620)}}
+function theme(){const a=AR[s.area];document.documentElement.style.setProperty("--h",a[1]);$("#an").textContent=a[0];
+const am=$("#amb");am.innerHTML="";for(let i=0;i<12;i++){const e=document.createElement("span");e.textContent=a[3][i%a[3].length];
+e.style.cssText="left:"+R()*95+"%;animation-duration:"+(9+R()*10)+"s;animation-delay:-"+R()*12+"s;font-size:"+(12+R()*14)+"px";am.appendChild(e)}}
+$("#crystal").addEventListener("click",ev=>{const nw=Date.now();combo=nw-cT<600?combo+1:1;cT=nw;let v=clickV();const cr=R()<.08;if(cr)v*=5;addp(v);s.clicks++;
+let x=ev.clientX,y=ev.clientY;if(!x&&!y){const r=$("#crystal").getBoundingClientRect();x=r.left+r.width/2;y=r.top+r.height/2}
+fx((cr?"CRÍTICO! +":"+")+f(v),x+(R()-.5)*50,y);ui()});
+// áreas e geradores
+AR.forEach((a,i)=>{const b=document.createElement("button");b.dataset.a=i;b.id="ch"+i;$("#chips").appendChild(b)});
+$("#chips").addEventListener("click",ev=>{const b=ev.target.closest("[data-a]");if(!b||b.disabled)return;s.area=+b.dataset.a;theme();ui()});
+const gens=$("#gens");
+G.forEach((g,i)=>{const d=document.createElement("div");d.className="row";d.id="r"+i;
+d.innerHTML='<div class="rt"><b>'+g[0]+'</b><span class="own" id="o'+i+'"></span></div><small id="d'+i+'"></small><button class="buy" id="b'+i+'" data-i="'+i+'"></button>';gens.appendChild(d)});
+gens.addEventListener("click",ev=>{const b=ev.target.closest("[data-i]");if(!b||b.disabled)return;const i=+b.dataset.i;
+const k=mode?mode:maxK(i);if(k<1||cost(i,k)>s.c)return;s.c-=cost(i,k);s.n[i]+=k;s.bought+=k;ui()});
+$("#seg").addEventListener("click",ev=>{const b=ev.target.closest("[data-m]");if(!b)return;mode=+b.dataset.m;ui()});
+// missões
+function mkQ(){const r=R(),t=r<.34?0:r<.67?1:2,i=Math.floor(R()*3);
+if(t==0)return{t,n:[30,60,100][i],st:s.clicks};if(t==1)return{t,n:[5,10,15][i],st:s.bought};
+return{t,n:Math.ceil(Math.max(300,cps()*[180,360,720][i])),st:s.prod}}
+const qp=q=>q.t==0?s.clicks-q.st:q.t==1?s.bought-q.st:s.prod-q.st;
+const qt=q=>q.t==0?"Quebre o cristal "+q.n+" vezes":q.t==1?"Compre "+q.n+" geradores":"Produza "+f(q.n)+" cristais";
+const qr=()=>(cps()*60+clickV()*30+50)*(1+.1*s.pets[4]);
+while(s.q.length<3)s.q.push(mkQ());
+for(let i=0;i<3;i++){const d=document.createElement("div");d.className="card";
+d.innerHTML='<div><b id="qt'+i+'"></b></div><small id="qd'+i+'"></small><i class="bar"><u id="qu'+i+'"></u></i><button class="buy" id="qb'+i+'" data-q="'+i+'"></button>';$("#qs").appendChild(d)}
+$("#qs").addEventListener("click",ev=>{const b=ev.target.closest("[data-q]");if(!b||b.disabled)return;const i=+b.dataset.q,q=s.q[i];
+if(qp(q)<q.n)return;const v=qr();add(v);s.q[i]=mkQ();toast("Missão completa! +"+f(v)+" cristais");ui()});
+// melhorias
+$("#cub").addEventListener("click",()=>{const u=CU[s.cu];if(u&&s.c>=u[1]){s.c-=u[1];s.cu++;ui()}});
+EU.forEach((e,i)=>{const d=document.createElement("div");d.className="card";
+d.innerHTML='<div><b>'+e[0]+'</b></div><small>'+e[1]+'</small><button class="buy" id="e'+i+'" data-e="'+i+'"></button>';$("#eus").appendChild(d)});
+$("#eus").addEventListener("click",ev=>{const b=ev.target.closest("[data-e]");if(!b||b.disabled)return;const i=+b.dataset.e;
+if(!s.eu[i]&&s.ess>=EU[i][2]){s.ess-=EU[i][2];s.eu[i]=1;ui()}});
+A.forEach(a=>{const d=document.createElement("div");d.id="a"+a[0];d.textContent=a[1];$("#achs").appendChild(d)});
+$("#pbtn").addEventListener("click",()=>{const g=gain();if(g<1)return;
+if(!confirmT||Date.now()>confirmT){confirmT=Date.now()+4000;ui();return}
+confirmT=0;s.ess+=g;s.essTot+=g;s.c=s.eu[0]?5000:0;s.run=0;s.n=G.map(()=>0);s.cu=0;fren=0;
+toast("Você renasceu! +"+g+" Essências");save();ui()});
+$("#tabs").addEventListener("click",ev=>{const b=ev.target.closest("[data-t]");if(!b)return;
+document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+["g","q","h","u","a","p"].forEach(t=>$("#p-"+t).hidden=t!==b.dataset.t)});
+// cristal dourado
+function spawnGold(){if(Date.now()<nextGold)return;nextGold=Date.now()+(45+R()*60)*1000/((s.eu[1]?2:1)*(1+.1*s.pets[3]));
+const b=document.createElement("button");b.className="gold";b.setAttribute("aria-label","Cristal dourado");
+b.innerHTML='<svg viewBox="0 0 60 60"><polygon points="30,3 52,24 30,57 8,24" fill="var(--gold)" stroke="var(--panel)" stroke-width="3" stroke-linejoin="round"/></svg>';
+b.style.left=(10+R()*70)+"%";b.style.top=(18+R()*58)+"%";
+b.onclick=()=>{b.remove();s.gold++;if(R()<.6){fren=Math.max(fren,Date.now())+30000;toast("Frenesi! Produção e cliques ×5 por 30s")}
+else{const v=Math.max(cps()*300,clickV()*30);add(v);toast("Chuva de cristais! +"+f(v))}ui()};
+$("#stage").appendChild(b);setTimeout(()=>b.remove(),13000)}
+function checkAch(){A.forEach(a=>{if(!s.ach[a[0]]&&a[2]()){s.ach[a[0]]=1;toast("Conquista: "+a[1]+" (+2% de produção)")}});
+while(s.ua<AR.length&&s.all>=AR[s.ua][2]){s.area=s.ua;s.ua++;theme();toast("Nova área descoberta: "+AR[s.area][0]+"!")}}
+const PETS=[["🟢 Slime","+3% de produção por nível"],["🦊 Raposa","+10% de poder do clique por nível"],["🐲 Dragãozinho","Ataca chefes: 0,5 golpe por segundo por nível"],["🦉 Coruja","+10% de cristais dourados por nível"],["🧚 Fada","+10% de prêmio das missões por nível"],["🐢 Tartaruga","+10% de ganho offline por nível"]];
+const BOSS=[["Golem de Cristal","🗿"],["Rei Cogumelo","🍄"],["Dragão de Lava","🐉"],["Devorador de Estrelas","👾"]];
+let boss=null,bossNext=Date.now()+150000;
+PETS.forEach((p,i)=>{const d=document.createElement("div");d.innerHTML="<b>"+p[0]+"</b><br><span class=own id=pl"+i+"></span><br><small>"+p[1]+"</small>";$("#pets").appendChild(d)});
+const giveEgg=()=>{const i=Math.floor(R()*PETS.length);s.pets[i]++;return PETS[i][0]};
+$("#egg").onclick=()=>{const c=2e3*2.4**s.eggs;if(s.c>=c){s.c-=c;s.eggs++;toast("Novo ajudante: "+giveEgg());ui()}};
+$("#mb").onclick=()=>{const c=cps()*180+10;if(s.c>=c){s.c-=c;add(cps()*900+50);merch=0;toast("Negócio fechado!")}};
+function bossStart(){const b=BOSS[s.area],h=30+s.bk*12;boss={n:b[0],hp:h,max:h,t:Date.now()+25000};
+$("#boss").innerHTML="<b>"+b[0]+"</b> <small id=bt></small><div class=hp><u id=bh></u></div><button class=bface id=bf aria-label=Atacar>"+b[1]+"</button>";
+$("#boss").hidden=false;$("#bf").onclick=()=>{hitBoss(1);const e=$("#bf");if(e){e.style.transform="scale(.85) rotate(-6deg)";setTimeout(()=>e.style.transform="",80)}};
+toast("Um chefe apareceu: "+b[0]+"! Toque nele!")}
+function hitBoss(n){if(!boss)return;boss.hp-=n;if(boss.hp<=0){const v=cps()*900+clickV()*200+500,nm=boss.n;add(v);s.bk++;boss=null;$("#boss").hidden=true;bossNext=Date.now()+180000;
+toast(nm+" derrotado! +"+f(v)+" cristais, +5% de produção eterna e um ovo: "+giveEgg())}}
+function meteor(){const b=document.createElement("button");b.className="mt";b.textContent="☄️";b.setAttribute("aria-label","Meteoro");b.style.left=(8+R()*80)+"%";b.style.top=(20+R()*55)+"%";
+b.onclick=ev=>{b.remove();const v=cps()*15+clickV()*4+10;add(v);fx("+"+f(v),ev.clientX,ev.clientY)};$("#stage").appendChild(b);setTimeout(()=>b.remove(),2800)}
+function extras(){const n=Date.now();
+if(boss){hitBoss(s.pets[2]*.05);if(boss){$("#bh").style.width=Math.max(0,boss.hp/boss.max*100)+"%";$("#bt").textContent=Math.ceil((boss.t-n)/1000)+"s";
+if(n>boss.t){boss=null;$("#boss").hidden=true;bossNext=n+120000;toast("O chefe fugiu! Ele volta em breve.")}}}else if(n>bossNext)bossStart();
+if(n>evNext){evNext=n+(120+R()*120)*1000;const k=Math.floor(R()*3);
+if(k==0){toast("Chuva de meteoros! Pegue todos!");for(let i=0;i<10;i++)setTimeout(meteor,i*900)}
+else if(k==1){evT=n+45000;toast("Maré de sorte! Produção ×3 por 45s")}
+else{merch=n+30000;toast("Mercador viajante chegou! Veja a oferta")}}
+$("#et").textContent=evT>n?"Maré de sorte ×3 · "+Math.ceil((evT-n)/1000)+"s":"";
+const mb=$("#mb");mb.hidden=!(merch>n);if(merch>n){const c=cps()*180+10;mb.textContent="Mercador: pague "+f(c)+" e receba "+f(cps()*900+50);mb.disabled=s.c<c}
+PETS.forEach((p,i)=>$("#pl"+i).textContent=s.pets[i]?"Nível "+s.pets[i]:"Não encontrado");
+const ec=2e3*2.4**s.eggs;$("#egg").textContent="Chocar · "+f(ec);$("#egg").disabled=s.c<ec}
+function ui(){
+$("#c").textContent=f(Math.floor(s.c));$("#cps").textContent=f(cps())+" cristais por segundo";
+$("#hint").textContent=s.all<1?"Toque no cristal para começar":combo>2&&Date.now()-cT<900?"Combo ×"+(1+Math.min(combo,20)/20).toFixed(2).replace(".",","):"";
+$("#stage").classList.toggle("fren",buffOn());
+$("#buff").textContent=buffOn()?"Frenesi ×5 · "+Math.ceil((fren-Date.now())/1000)+"s":"";
+$("#mini").textContent="Bônus global ×"+gm().toFixed(2).replace(".",",")+" · Essências: "+s.ess+" · Chefes: "+s.bk;
+document.querySelectorAll("#seg button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.m===mode));
+AR.forEach((a,i)=>{const b=$("#ch"+i);b.textContent=i<s.ua?a[0]:"🔒 "+f(a[2]);b.disabled=i>=s.ua;b.setAttribute("aria-pressed",i===s.area)});
+G.forEach((g,i)=>{$("#r"+i).hidden=g[3]!==s.area;
+const k=mode?mode:Math.max(1,maxK(i)),c=cost(i,k),b=$("#b"+i),nx=M.find(t=>t>s.n[i]);
+$("#o"+i).textContent=s.n[i]?"×"+s.n[i]:"";
+$("#d"+i).textContent=f(g[2]*mm(s.n[i])*gm())+"/s cada · "+(nx?"bônus ×2 com "+nx:"bônus máximo");
+b.textContent="×"+k+" · "+f(Math.ceil(c));b.disabled=s.c<c});
+let rdy=0;s.q.forEach((q,i)=>{const p=qp(q),ok=p>=q.n;if(ok)rdy++;$("#qt"+i).textContent=qt(q);
+$("#qd"+i).textContent=f(Math.min(p,q.n))+" de "+f(q.n)+" · prêmio: "+f(qr())+" cristais";$("#qu"+i).style.width=Math.min(100,p/q.n*100)+"%";
+const b=$("#qb"+i);b.textContent=ok?"Resgatar":"Em andamento";b.disabled=!ok;b.classList.toggle("ready",ok)});
+$("#tq").textContent="Missões"+(rdy?" ●":"");
+const u=CU[s.cu];$("#cun").textContent=u?u[0]:"Todas compradas";$("#cud").textContent=u?"Dobra o valor de cada clique":"Seus cliques estão no máximo";
+$("#cub").textContent=u?"Comprar · "+f(u[1]):"Completo";$("#cub").disabled=!u||s.c<u[1];
+EU.forEach((e,i)=>{const b=$("#e"+i);b.textContent=s.eu[i]?"Ativa":e[2]+" Essências";b.disabled=!!s.eu[i]||s.ess<e[2]});
+const n=Object.keys(s.ach).length;$("#acnt").textContent=n+" de "+A.length+" conquistas · cada uma dá +2% de produção";
+A.forEach(a=>$("#a"+a[0]).classList.toggle("on",!!s.ach[a[0]]));
+const g=gain();$("#pinfo").textContent="Essências totais: "+s.essTot+" (+"+(s.essTot*5)+"% de produção). Ao renascer agora: +"+g+".";
+const ok=confirmT&&Date.now()<confirmT;$("#pbtn").textContent=g<1?"Precisa de mais cristais":ok?"Toque para confirmar":"Renascer (+"+g+")";$("#pbtn").disabled=g<1}
+let last=performance.now();
+setInterval(()=>{const now=performance.now(),dt=Math.min((now-last)/1000,3600);last=now;addp(cps()*dt);checkAch();spawnGold();extras();ui()},100);
+setInterval(save,10000);addEventListener("beforeunload",save);
+(function(){const el=Math.min((Date.now()-s.t)/1000,28800);if(el>60){const v=base()*el*(s.eu[2]?1:.5)*(1+.1*s.pets[5]);if(v>0){add(v);setTimeout(()=>toast("Enquanto você estava fora: +"+f(v)+" cristais"),400)}}})();
+theme();ui();
+</script>
+</body>
+</html>
